@@ -1,6 +1,7 @@
 import { LitElement, html, css, svg } from "../web_modules/lit-element.js";
 import "../web_modules/@material/mwc-drawer.js";
 import "../web_modules/@material/mwc-top-app-bar.js";
+import "../web_modules/@material/mwc-icon.js";
 import "../web_modules/@material/mwc-icon-button.js";
 import "../web_modules/@material/mwc-button.js";
 import "../web_modules/@material/mwc-dialog.js";
@@ -8,6 +9,7 @@ import "../web_modules/@material/mwc-snackbar.js";
 import "../web_modules/@material/mwc-select.js";
 import '../web_modules/@material/mwc-menu.js';
 import '../web_modules/@material/mwc-textfield.js';
+import '../web_modules/@material/mwc-list.js';
 import '../web_modules/@material/mwc-list/mwc-list-item.js';
 
 function getBatterySVGPaths(batteryLevel) {
@@ -16,56 +18,70 @@ function getBatterySVGPaths(batteryLevel) {
     case 0: // 0-9% (alert)
       return svg`
         <path d="M0 0h18v18h-18z" fill="none"/>
-        <path d="M12 3h-1.5v-1.5h-3v1.5h-1.5c-.55 0-1 .45-1 1v11c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-11c0-.55-.45-1-1-1zm-2 10h-2v-2h2v2zm0-3h-2v-4h2v4z"/>
+        <path d="M12 3h-1.5v-1.5h-3v1.5h-1.5c-.55 0-1
+          .45-1 1v11c0 .55.45 1 1 1h6c.55 0 1-.45
+          1-1v-11c0-.55-.45-1-1-1zm-2 10h-2v-2h2v2zm0-3h-2v-4h2v4z"/>
       `;
     case 1: // 10-19% (20)
       return svg`
         <path d="M0 0h18v18h-18z" fill="none"/>
-        <path fill-opacity=".3" d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 0-1 .45-1 1v8.5h8v-8.5z"/>
+        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 
+          0-1 .45-1 1v8.5h8v-8.5z" fill-opacity=".3"/>
         <path d="M5 12.5v2.5c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.5h-8z"/>
       `;
     case 2: // 20-29% (30)
       return svg` 
         <path d="M0 0h18v18h-18z" fill="none"/>
-        <path fill-opacity=".3" d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 0-1 .45-1 1v7.5h8v-7.5z"/>
+        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 
+          0-1 .45-1 1v7.5h8v-7.5z" fill-opacity=".3"/>
         <path d="M5 11.5v3.5c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-3.5h-8z"/>
       `;
     case 3:
     case 4: // 30-49% (50)
       return svg`
         <path d="M0 0h18v18h-18z" fill="none"/>
-        <path fill-opacity=".3" d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 0-1 .45-1 1v5.5h8v-5.5z"/>
+        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 
+          0-1 .45-1 1v5.5h8v-5.5z" fill-opacity=".3" />
         <path d="M5 9.5v5.5c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-5.5h-8z"/>
       `;
     case 5: // 50-69% (60)
     case 6:
       return svg`
         <path d="M0 0h18v18h-18z" fill="none"/>
-        <path fill-opacity=".3" d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 0-1 .45-1 1v4.5h8v-4.5z"/>
+        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 
+          0-1 .45-1 1v4.5h8v-4.5z" fill-opacity=".3"/>
         <path d="M5 8.5v6.5c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-6.5h-8z"/>
       `;
     case 7: // 70-79% (80)
       return svg`
         <path d="M0 0h18v18h-18z" fill="none"/>
-        <path fill-opacity=".3" d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 0-1 .45-1 1v2.5h8v-2.5z"/>
+        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 
+          0-1 .45-1 1v2.5h8v-2.5z" fill-opacity=".3"/>
         <path d="M5 6.5v8.5c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-8.5h-8z"/>
       `;
     case 8: // 80-89% (90)
       return svg`
         <path d="M0 0h18v18h-18z" fill="none"/>
-        <path fill-opacity=".3" d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 0-1 .45-1 1v1.5h8v-1.5z"/>
+        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55
+          0-1 .45-1 1v1.5h8v-1.5z" fill-opacity=".3"/>
         <path d="M5 5.5v9.5c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-9.5h-8z"/>
       `;
     case 9: // 90-100% (full)
     case 10:
       return svg`
-        <path d="M12 3h-1.5v-1.5h-3v1.5h-1.5c-.55 0-1 .45-1 1v11c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-11c0-.55-.45-1-1-1z"/>
+        <path d="M12 3h-1.5v-1.5h-3v1.5h-1.5c-.55 0-1 .45-1 1v11c0
+          .55.45 1 1 1h6c.55 0 1-.45 1-1v-11c0-.55-.45-1-1-1z"/>
         <path d="M0 0h18v18h-18z" fill="none"/>
       `;
     default:
       return svg`
         <path d="M0 0h18v18h-18z" fill="none"/>
-        <path d="M12 3h-1.5v-1.5h-3v1.5h-1.5c-.55 0-1 .45-1 1v11c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-11c0-.55-.45-1-1-1zm-2.2 10.8h-1.6v-1.6h1.6v1.6zm1.12-4.89s-.32.35-.56.59c-.4.4-.69 1.12-.69 1.5h-1.47c0-.69.52-1.44.91-1.83l.78-.79c.23-.23.37-.54.37-.88 0-.69-.56-1.25-1.25-1.25s-1.25.56-1.25 1.25h-1.26c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5c0 .55-.22 1.05-.58 1.41z"/>
+        <path d="M12 3h-1.5v-1.5h-3v1.5h-1.5c-.55 0-1 .45-1 1v11c0
+          .55.45 1 1 1h6c.55 0 1-.45 1-1v-11c0-.55-.45-1-1-1zm-2.2
+          10.8h-1.6v-1.6h1.6v1.6zm1.12-4.89s-.32.35-.56.59c-.4.4-.69 1.12-.69
+          1.5h-1.47c0-.69.52-1.44.91-1.83l.78-.79c.23-.23.37-.54.37-.88
+          0-.69-.56-1.25-1.25-1.25s-1.25.56-1.25 1.25h-1.26c0-1.38
+          1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5c0 .55-.22 1.05-.58 1.41z"/>
       `;
   }
 }
@@ -80,10 +96,12 @@ class MeijiHTMonitor extends LitElement {
 
   static styles = css`
     :host {
-      width: 100%
+      width: 100%;
+      height: 100%;
     }
 
-    div {
+    #content {
+      width: calc(100vw - 64px);
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
@@ -91,10 +109,50 @@ class MeijiHTMonitor extends LitElement {
       align-items: center;
     }
 
-    mwc-icon-button {
-      --mdc-icon-size: 16px;
+    #content > * {
+      margin: 0px 8px;
+    }
+
+    #name-field {
+      min-width: 0;
+      min-height: 0;
+      flex-shrink: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #spanner {
+      flex-grow: 1;
+    }
+
+    svg {
+      min-width: 18px;
+      min-height: 18px;
     }
   `;
+
+  render() {
+    return html`
+      <mwc-list-item hasMeta>
+        <div id="content">
+          <div id="name-field">
+            ${this.name}
+          </div>
+          <div id="spanner"></div>
+          <div>${this.temperature.toFixed(1)}°C</div>
+          <div>${this.humidity.toFixed(1)}% RH</div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+            ${getBatterySVGPaths(this.batteryLevel)}
+          </svg>
+        </div>
+        <mwc-icon slot="meta" @click=${(ev) => {
+          menu.anchor = ev.target;
+          menu.target = this;
+          menu.open = true;
+        }}>more_horiz</mwc-icon>
+      </mwc-list-item>
+    `;
+  }
 
   set name(value) {
     localStorage.setItem(`device-${this.deviceAddress}`, value);
@@ -104,52 +162,87 @@ class MeijiHTMonitor extends LitElement {
   get name() {
     return localStorage.getItem(`device-${this.deviceAddress}`) || this.deviceAddress;
   }
-
-  render() {
-    return html`
-      <div>
-        <div>
-          <div>${this.name}</div>
-          <mwc-icon-button icon="edit" @click=${() => this.name = "Kitchen"}></mwc-icon-button>
-        </div>
-        <div>${this.temperature.toFixed(1)}°C</div>
-        <div>${this.humidity.toFixed(1)}% RH</div>
-        <svg id="bg-scan" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
-          ${getBatterySVGPaths(this.batteryLevel)}
-        </svg>
-      </div>
-    `;
-  }
 }
 customElements.define("meiji-ht-monitor", MeijiHTMonitor);
 
 let demoCounter = 0;
+let menu;
+let blocklist = [];
 
 class MainApp extends LitElement {
   static styles = css`
-  .drawer-content {
-    padding: 0px 16px 0 16px;
-  }
-  .main-content {
-    width: 100vw;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: center;
-    align-content: stretch;
-  }
+    .drawer-content {
+      padding: 0px 16px 0 16px;
+    }
 
-  .header {
-    padding: 16px;
-  }
+    * {
+      --mdc-theme-primary: #31b4c0;
+    }
 
-  hr {
-    width: 100%;
-  }
+    .main-content {
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      align-items: center;
+      align-content: stretch;
+    }
+
+    .header {
+      padding: 16px;
+    }
+
+    mwc-list {
+      width: 100vw;
+      --mdc-ripple-color: transparent;
+    }
+
+    hr {
+      width: 100%;
+    }
   `;
 
+  _onblock() {
+    blocklist.push(menu.target.deviceAddress);
+    menu.target.parentElement.removeChild(menu.target);
+  }
+
+  _onrename() {
+    menu.target.name = "New Name";
+  }
+
+  render() {
+    return html`
+      <mwc-drawer hasHeader type=modal>
+        <span slot="title">Webble Mi Monitor</span>
+        <div slot="appContent">
+          <mwc-top-app-bar>
+            <mwc-icon-button slot="navigationIcon" icon="menu"></mwc-icon-button>
+            <div slot="title">Webble Mi</div>
+          </mwc-top-app-bar>
+          <div class="main-content">
+            <div class="header">
+              <mwc-button @click=${() => this.scan()}>Start scanning</mwc-button>
+            </div>
+            <mwc-list id="devices"></mwc-list>
+          </div>
+        </div>
+      </mwc-drawer>
+      <mwc-snackbar id="snackbar">
+        <mwc-button id="actionButton" slot="action">CANCEL</mwc-button>
+        <mwc-icon-button id="iconButton" icon="close" slot="dismiss"></mwc-icon-button>
+      </mwc-snackbar>
+      <mwc-menu id="menu" absolute>
+        <mwc-list-item @click=${this._onrename}>Edit name</mwc-list-item>
+        <mwc-list-item @click=${this._onblock}>Block device</mwc-list-item>
+      </mwc-menu>
+    `;
+  }
+
   async firstUpdated() {
+    menu = this.shadowRoot.querySelector("#menu");
+
     const drawer = this.shadowRoot.querySelector("mwc-drawer");
     const container = drawer.parentNode;
     container.addEventListener('MDCTopAppBar:nav', _ => {
@@ -164,7 +257,11 @@ class MainApp extends LitElement {
 
       setInterval(() => {
         demoCounter = (demoCounter + 1) % 255;
-        const address = ["abc", "def", "hij"][Math.round(getRandomArbitrary(0, 2))]; 
+        const address = [
+          "id005020aa01",
+          "ida15020aa01",
+          "idb55020aa01"][Math.round(getRandomArbitrary(0, 2))];
+
         this._onreading({
           readingCounter: demoCounter,
           deviceAddress: address,
@@ -212,12 +309,16 @@ class MainApp extends LitElement {
   };
 
   _onreading(reading) {
+    if (blocklist.includes(reading.deviceAddress)) {
+      return;
+    }
+
     let monitor = this.shadowRoot.querySelector(`#${reading.deviceAddress}`);
     if (!monitor) {
       monitor = document.createElement("meiji-ht-monitor");
       monitor.id = reading.deviceAddress;
 
-      const slot = this.shadowRoot.querySelector(".main-content");
+      const slot = this.shadowRoot.querySelector("#devices");
       slot.appendChild(monitor);
     }
     if (reading.temperature) {
@@ -249,29 +350,6 @@ class MainApp extends LitElement {
     } catch(error)  {
       log('Argh! ' + error);
     }
-  }
-
-  render() {
-    return html`
-      <mwc-drawer hasHeader type=modal>
-        <span slot="title">Webble Mi Monitor</span>
-        <div slot="appContent">
-          <mwc-top-app-bar>
-            <mwc-icon-button slot="navigationIcon" icon="menu"></mwc-icon-button>
-            <div slot="title">Webble Mi</div>
-          </mwc-top-app-bar>
-          <div class="main-content">
-            <div class="header">
-              <mwc-button @click=${() => this.scan()}>Start scanning</mwc-button>
-            </div>
-          </div>
-        </div>
-      </mwc-drawer>
-      <mwc-snackbar id="snackbar">
-        <mwc-button id="actionButton" slot="action">CANCEL</mwc-button>
-        <mwc-icon-button id="iconButton" icon="close" slot="dismiss"></mwc-icon-button>
-      </mwc-snackbar>
-    `;
   }
 }
 

@@ -1,0 +1,18 @@
+{
+    "short_name": "Webble Mi",
+    "name": "Webble Mi",
+    "description": "Humidity and Temperature information",
+    "icons": [
+      {
+        "src": "images/maskable_icon.png",
+        "type": "image/png",
+        "sizes": "364x364",
+        "purpose": "any maskable"
+      }
+    ],
+    "start_url": "./?source=pwa",
+    "background_color": "#31b4c0",
+    "display": "standalone",
+    "scope": "./",
+    "theme_color": "#31b4c0"
+  }

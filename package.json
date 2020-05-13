@@ -1,5 +1,5 @@
 {
-  "name": "webnfc-tools",
+  "name": "webble-mi",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,18 +9,19 @@
     "build": "rimraf web_modules && snowpack --optimize"
   },
   "dependencies": {
-    "@material/mwc-button": "^0.12.0",
-    "@material/mwc-dialog": "^0.12.0",
-    "@material/mwc-drawer": "^0.12.0",
-    "@material/mwc-icon-button": "^0.12.0",
-    "@material/mwc-list": "^0.13.0",
-    "@material/mwc-menu": "^0.13.0",
-    "@material/mwc-select": "^0.13.0",
-    "@material/mwc-snackbar": "^0.12.0",
-    "@material/mwc-textfield": "^0.12.0",
-    "@material/mwc-top-app-bar": "^0.12.0",
-    "lit-element": "^2.2.1",
-    "lit-html": "^1.1.2"
+    "@material/mwc-button": "^0.15.0",
+    "@material/mwc-dialog": "^0.15.0",
+    "@material/mwc-drawer": "^0.15.0",
+    "@material/mwc-icon": "^0.15.0",
+    "@material/mwc-icon-button": "^0.15.0",
+    "@material/mwc-list": "^0.15.0",
+    "@material/mwc-menu": "^0.15.0",
+    "@material/mwc-select": "^0.15.0",
+    "@material/mwc-snackbar": "^0.15.0",
+    "@material/mwc-textfield": "^0.15.0",
+    "@material/mwc-top-app-bar": "^0.15.0",
+    "lit-element": "^2.3.1",
+    "lit-html": "^1.2.1"
   },
   "devDependencies": {
     "snowpack": "^1.0.4",
@@ -35,6 +36,7 @@
       "@material/mwc-button",
       "@material/mwc-dialog",
       "@material/mwc-drawer",
+      "@material/mwc-icon",
       "@material/mwc-icon-button",
       "@material/mwc-list",
       "@material/mwc-list/mwc-list-item.js",
