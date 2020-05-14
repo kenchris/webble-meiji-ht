@@ -20,38 +20,5 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-/**
- * Determine whether the current browser supports passive event listeners, and
- * if so, use them.
- */
-function applyPassive(globalObj) {
-    if (globalObj === void 0) { globalObj = window; }
-    return supportsPassiveOption(globalObj) ?
-        { passive: true } :
-        false;
-}
-function supportsPassiveOption(globalObj) {
-    if (globalObj === void 0) { globalObj = window; }
-    // See
-    // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
-    var passiveSupported = false;
-    try {
-        var options = {
-            // This function will be called when the browser
-            // attempts to access the passive property.
-            get passive() {
-                passiveSupported = true;
-                return false;
-            }
-        };
-        var handler = function () { };
-        globalObj.document.addEventListener('test', handler, options);
-        globalObj.document.removeEventListener('test', handler, options);
-    }
-    catch (err) {
-        passiveSupported = false;
-    }
-    return passiveSupported;
-}
-
-export { applyPassive as a };
+function t(t){return void 0===t&&(t=window),!!function(t){void 0===t&&(t=window);var e=!1;try{var n={get passive(){return e=!0,!1}},r=function(){};t.document.addEventListener("test",r,n),t.document.removeEventListener("test",r,n)}catch(t){e=!1}return e}(t)&&{passive:!0}}export{t as a};
+//# sourceMappingURL=events-a64aa528.js.map

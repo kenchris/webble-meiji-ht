@@ -20,6 +20,7 @@
     "@material/mwc-snackbar": "^0.15.0",
     "@material/mwc-textfield": "^0.15.0",
     "@material/mwc-top-app-bar": "^0.15.0",
+    "idb-keyval": "^3.2.0",
     "lit-element": "^2.3.1",
     "lit-html": "^1.2.1"
   },
@@ -46,7 +47,8 @@
       "@material/mwc-textfield",
       "@material/mwc-top-app-bar",
       "lit-element",
-      "lit-html"
+      "lit-html",
+      "idb-keyval"
     ]
   },
   "keywords": [],

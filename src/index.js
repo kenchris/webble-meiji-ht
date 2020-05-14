@@ -12,6 +12,8 @@ import '../web_modules/@material/mwc-textfield.js';
 import '../web_modules/@material/mwc-list.js';
 import '../web_modules/@material/mwc-list/mwc-list-item.js';
 
+import { set, get } from '../web_modules/idb-keyval.js';
+
 function getBatterySVGPaths(batteryLevel) {
   const value = Math.floor(Math.max(Math.min(100, batteryLevel), 0) / 10);
   switch(value) {
@@ -25,14 +27,14 @@ function getBatterySVGPaths(batteryLevel) {
     case 1: // 10-19% (20)
       return svg`
         <path d="M0 0h18v18h-18z" fill="none"/>
-        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 
+        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55
           0-1 .45-1 1v8.5h8v-8.5z" fill-opacity=".3"/>
         <path d="M5 12.5v2.5c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.5h-8z"/>
       `;
     case 2: // 20-29% (30)
-      return svg` 
+      return svg`
         <path d="M0 0h18v18h-18z" fill="none"/>
-        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 
+        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55
           0-1 .45-1 1v7.5h8v-7.5z" fill-opacity=".3"/>
         <path d="M5 11.5v3.5c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-3.5h-8z"/>
       `;
@@ -40,7 +42,7 @@ function getBatterySVGPaths(batteryLevel) {
     case 4: // 30-49% (50)
       return svg`
         <path d="M0 0h18v18h-18z" fill="none"/>
-        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 
+        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55
           0-1 .45-1 1v5.5h8v-5.5z" fill-opacity=".3" />
         <path d="M5 9.5v5.5c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-5.5h-8z"/>
       `;
@@ -48,14 +50,14 @@ function getBatterySVGPaths(batteryLevel) {
     case 6:
       return svg`
         <path d="M0 0h18v18h-18z" fill="none"/>
-        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 
+        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55
           0-1 .45-1 1v4.5h8v-4.5z" fill-opacity=".3"/>
         <path d="M5 8.5v6.5c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-6.5h-8z"/>
       `;
     case 7: // 70-79% (80)
       return svg`
         <path d="M0 0h18v18h-18z" fill="none"/>
-        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55 
+        <path d="M13 4c0-.55-.45-1-1-1h-1.5v-1.5h-3v1.5h-1.5c-.55
           0-1 .45-1 1v2.5h8v-2.5z" fill-opacity=".3"/>
         <path d="M5 6.5v8.5c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-8.5h-8z"/>
       `;
@@ -87,11 +89,12 @@ function getBatterySVGPaths(batteryLevel) {
 }
 
 class MeijiHTMonitor extends LitElement {
-  static properties = { 
+  static properties = {
     temperature: { type: Number },
     humidity: { type: Number },
     battery: { type: Number },
-    deviceAddress: { type: String }
+    deviceAddress: { type: String },
+    name: { type: String }
   };
 
   static styles = css`
@@ -136,7 +139,7 @@ class MeijiHTMonitor extends LitElement {
       <mwc-list-item hasMeta>
         <div id="content">
           <div id="name-field">
-            ${this.name}
+            ${this.name || this.deviceAddress}
           </div>
           <div id="spanner"></div>
           <div>${this.temperature.toFixed(1)}°C</div>
@@ -154,20 +157,27 @@ class MeijiHTMonitor extends LitElement {
     `;
   }
 
-  set name(value) {
-    localStorage.setItem(`device-${this.deviceAddress}`, value);
-    this.requestUpdate();
+  async loadUserData() {
+    const name = await get(`device-${this.deviceAddress}`);
+    if (name) {
+      this.name = name;
+    }
   }
 
-  get name() {
-    return localStorage.getItem(`device-${this.deviceAddress}`) || this.deviceAddress;
+  _name = null;
+
+  get name() { return this._name; }
+
+  set name(value) {
+    this._name = value;
+    set(`device-${this.deviceAddress}`, value);
+    this.requestUpdate();
   }
 }
 customElements.define("meiji-ht-monitor", MeijiHTMonitor);
 
 let demoCounter = 0;
 let menu;
-let blocklist = [];
 
 class MainApp extends LitElement {
   static styles = css`
@@ -201,15 +211,37 @@ class MainApp extends LitElement {
     hr {
       width: 100%;
     }
+
+    mwc-textfield {
+      width: 100%;
+    }
   `;
 
+  constructor() {
+    super();
+    this.blocklist = new Set();
+    get("blocklist").then(json => json ? JSON.parse(json) : []).then(list => this.blocklist = new Set(list));
+  }
+
   _onblock() {
-    blocklist.push(menu.target.deviceAddress);
+    this.blocklist.add(menu.target.deviceAddress);
+    set("blocklist", JSON.stringify(Array.from(this.blocklist)));
     menu.target.parentElement.removeChild(menu.target);
   }
 
   _onrename() {
-    menu.target.name = "New Name";
+    this.target = menu.target;
+    this.requestUpdate();
+
+    const textField = this.shadowRoot.querySelector('#name-textfield');
+    textField.value = this.target.deviceAddress !== this.target.name ? this.target.name : '';
+
+    const dialog = this.shadowRoot.querySelector("mwc-dialog");
+    dialog.addEventListener('closed', ev => {
+      if (ev.detail.action !== "accept") return;
+      this.target.name = textField.value;
+    }, { once: true });
+    dialog.open = true;
   }
 
   render() {
@@ -229,14 +261,18 @@ class MainApp extends LitElement {
           </div>
         </div>
       </mwc-drawer>
-      <mwc-snackbar id="snackbar">
-        <mwc-button id="actionButton" slot="action">CANCEL</mwc-button>
-        <mwc-icon-button id="iconButton" icon="close" slot="dismiss"></mwc-icon-button>
-      </mwc-snackbar>
       <mwc-menu id="menu" absolute>
         <mwc-list-item @click=${this._onrename}>Edit name</mwc-list-item>
         <mwc-list-item @click=${this._onblock}>Block device</mwc-list-item>
       </mwc-menu>
+      <mwc-dialog heading="Rename ${this.target?.name || this.target?.deviceAddress}">
+        <div>
+          Enter a new name for the device "${this.target?.deviceAddress}".
+        </div>
+        <mwc-textfield id="name-textfield" dialogInitialFocus></mwc-textfield>
+        <mwc-button slot="secondaryAction" dialogAction="close">CANCEL</mwc-button>
+        <mwc-button slot="primaryAction" dialogAction="accept">ACCEPT</mwc-button>
+      </mwc-dialog>
     `;
   }
 
@@ -288,7 +324,7 @@ class MainApp extends LitElement {
       humidity: null,
       batteryLevel: null
     }
-    
+
     switch (reading.dataType) {
       case 0x0d: // temperature and humidity
         reading.temperature = dataView.getInt16(14, true) / 10;
@@ -308,8 +344,8 @@ class MainApp extends LitElement {
     return reading;
   };
 
-  _onreading(reading) {
-    if (blocklist.includes(reading.deviceAddress)) {
+  async _onreading(reading) {
+    if (this.blocklist.has(reading.deviceAddress)) {
       return;
     }
 
@@ -317,6 +353,9 @@ class MainApp extends LitElement {
     if (!monitor) {
       monitor = document.createElement("meiji-ht-monitor");
       monitor.id = reading.deviceAddress;
+      monitor.deviceAddress = reading.deviceAddress;
+
+      await monitor.loadUserData();
 
       const slot = this.shadowRoot.querySelector("#devices");
       slot.appendChild(monitor);
@@ -330,7 +369,6 @@ class MainApp extends LitElement {
     if (reading.batteryLevel) {
       monitor.batteryLevel = reading.batteryLevel;
     }
-    monitor.deviceAddress = reading.deviceAddress;
   }
 
   async scan() {
@@ -338,7 +376,7 @@ class MainApp extends LitElement {
       await navigator.bluetooth.requestLEScan({
         filters: [{ name: "MJ_HT_V1" }]
       });
-  
+
       navigator.bluetooth.addEventListener('advertisementreceived', event => {
         event.serviceData.forEach((dataView, key) => {
           if (key == "0000fe95-0000-1000-8000-00805f9b34fb") {
